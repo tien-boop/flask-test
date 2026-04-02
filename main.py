@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, datetime
+from flask import Flask, render_template, request
+import datetime
 #GÖR DATETIME FÖDELSEDAG
 
 # Skapa en Flask-app
@@ -15,8 +16,17 @@ def user(name):
 
 @app.route("/show", methods=["POST"])
 def show():
-    b_day = request.form["b_day"]
-    return "Du gillar: " + b_day
+    b_day = request.form["b_day"].split("-")
+    this_year = datetime.date.today().year
+    today = datetime.date.today()
+    this_b_day = datetime.date(this_year, int(b_day[1]), int(b_day[2]))
+    if (this_b_day - today).days > 0:
+        time_to_birthday = (this_b_day - today).days
+    else:
+        time_to_birthday = (this_b_day - today).days + 365
+
+    #time_to_birthday = datetime.date.fromisoformat(b_day) - today
+    return "Du fyller om " + str(time_to_birthday) + " dagar!"
 
 # På adressen /hello/ kan man ange sitt namn som parameter
 @app.route("/<namn>")
